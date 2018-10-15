@@ -1,0 +1,8 @@
+---
+- hosts: workstation
+  #remote_user: root
+  tasks:
+    - name: Install mozartctl
+      import_role:
+       name: mozart
+       tasks_from: install_mozartctl

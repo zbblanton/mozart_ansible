@@ -1,0 +1,7 @@
+---
+- hosts: workstation
+  #remote_user: root
+  tasks:
+    - import_role:
+       name: mozart
+       tasks_from: install_etcd

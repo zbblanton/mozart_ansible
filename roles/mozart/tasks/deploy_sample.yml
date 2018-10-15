@@ -1,0 +1,13 @@
+---
+
+- name: Copy sample.js to app folder
+  copy: src=sample.js dest=/var/app/
+
+- name: Copy sample_nodejs.service to systemd folder
+  copy: src=sample_nodejs.service dest=/etc/systemd/system/
+
+- name: Enable and start the service sample_nodejs
+  systemd:
+    name: sample_nodejs
+    enabled: yes
+    state: started

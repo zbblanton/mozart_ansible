@@ -1,0 +1,45 @@
+---
+- name: Download binaries
+  get_url:
+    url: https://github.com/etcd-io/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz
+    dest: /tmp/etcd-v3.3.9-linux-amd64.tar.gz
+- name: Create a folder to unarchive the file.
+  file:
+    path: /tmp/etcd
+    state: directory
+- name: Extract archive
+  unarchive:
+    remote_src: yes
+    dest: /tmp/etcd
+    src: /tmp/etcd-v3.3.9-linux-amd64.tar.gz
+    extra_opts: [--strip-components=1]
+- name: Copy file
+  copy:
+    src: /tmp/etcd/etcd
+    dest: /usr/local/bin/etcd
+    remote_src: yes
+- name: Copy file
+  copy:
+    src: /tmp/etcd/etcdctl
+    dest: /usr/local/bin/etcdctl
+    remote_src: yes
+- name: Set permissions
+  file:
+    path: /usr/local/bin/etcd
+    owner: root
+    group: root
+    mode: 0755
+- name: Set permissions
+  file:
+    path: /usr/local/bin/etcdctl
+    owner: root
+    group: root
+    mode: 0755
+- name: Delete tar
+  file:
+    path: /tmp/etcd-v3.3.9-linux-amd64.tar.gz
+    state: absent
+- name: Delete folder
+  file:
+    path: /tmp/etcd
+    state: absent

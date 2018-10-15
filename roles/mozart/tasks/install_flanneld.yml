@@ -1,0 +1,11 @@
+---
+- name: Download binaries
+  get_url:
+    url: https://github.com/coreos/flannel/releases/download/v0.10.0/flanneld-amd64
+    dest: /usr/local/bin/flanneld
+- name: Set permissions
+  file:
+    path: /usr/local/bin/flanneld
+    owner: root
+    group: root
+    mode: 0755

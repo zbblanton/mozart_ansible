@@ -1,0 +1,41 @@
+---
+- name: Download binaries
+  get_url:
+    url: https://github.com/zbblanton/mozart/releases/download/Beta/mozartctl-linux-amd64.tar.gz
+    dest: /tmp/mozartctl-linux-amd64.tar.gz
+  tags: install_mozartctl
+- name: Create a folder to unarchive the file.
+  file:
+    path: /tmp/mozartctl
+    state: directory
+  tags: install_mozartctl
+- name: Extract archive
+  unarchive:
+    remote_src: yes
+    dest: /tmp/mozartctl
+    src: /tmp/mozartctl-linux-amd64.tar.gz
+    extra_opts: [--strip-components=1]
+  tags: install_mozartctl
+- name: Copy file
+  copy:
+    src: /tmp/mozartctl/mozartctl
+    dest: /usr/local/bin/mozartctl
+    remote_src: yes
+  tags: install_mozartctl
+- name: Set permissions
+  file:
+    path: /usr/local/bin/mozartctl
+    owner: root
+    group: root
+    mode: 0755
+  tags: install_mozartctl
+- name: Delete tar
+  file:
+    path: /tmp/mozartctl-linux-amd64.tar.gz
+    state: absent
+  tags: install_mozartctl
+- name: Delete folder
+  file:
+    path: /tmp/mozartctl
+    state: absent
+  tags: install_mozartctl

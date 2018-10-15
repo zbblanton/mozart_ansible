@@ -1,0 +1,6 @@
+---
+- hosts: 127.0.0.1
+  remote_user: root
+  connection: local
+  roles:
+     - { role: nodejs, deploy_sample: 'yes' }

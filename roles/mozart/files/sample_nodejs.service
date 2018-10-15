@@ -1,0 +1,12 @@
+[Unit]
+Description=Sample Node.js app.
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/nodejs/bin/node /var/app/sample.js
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

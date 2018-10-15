@@ -1,0 +1,24 @@
+---
+- hosts: workstation
+  tasks:
+    - name: Include vars of stuff.yaml into the 'stuff' variable (2.2).
+      include_vars:
+        file: /etc/mozart/config.json
+        name: stuff
+    - name: test
+      debug:
+        msg: "{{ stuff.AgentJoinKey }}"
+
+- hosts: testme
+  tasks:
+    - name: Include vars of stuff.yaml into the 'stuff' variable (2.2).
+      include_vars:
+        file: /etc/mozart/config.json
+        name: stuff
+      delegate_to: workstation
+    - name: user_data_contents
+      shell: cat {{ stuff.CaCert }}
+      register: caCertRaw
+    - name: test
+      debug:
+        msg: "{{ caCertRaw.stdout|b64encode|checksum }}"

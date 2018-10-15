@@ -1,0 +1,20 @@
+---
+- name: Include vars of mozart server config.
+  include_vars:
+    file: /etc/mozart/config.json
+    name: mozartConfig
+- name: Create systemd file.
+  copy:
+   dest: "/etc/systemd/system/mozart-agent.service"
+   content: |
+     [Unit]
+     Description=Mozart Agent
+     Documentation=https://github.com/zbblanton/mozart
+     [Service]
+     ExecStart=/usr/local/bin/mozart-agent --agent={{inventory_hostname}} --servers={{mozartConfig.Servers|join(',')}} --key={{mozartConfig.AgentJoinKey}} --ca-hash={{mozartConfig.CaHash}}
+     Restart=on-failure
+     RestartSec=5
+     [Install]
+     WantedBy=multi-user.target
+- name: Reload systemd
+  systemd: daemon_reload=yes

@@ -1,0 +1,55 @@
+---
+- hosts: workstation
+  remote_user: root
+  tasks:
+    - import_role:
+       name: mozart
+       tasks_from: install_mozartctl
+    - name: Create the cluster config files.
+      command: mozartctl cluster create --name mozart --servers CSV_OF_SERVERS
+
+- hosts: masters
+  remote_user: root
+  tasks:
+    - name: Install and configure tools
+      import_role:
+       name: mozart
+       tasks_from: {{ item }}
+       with_items:
+         - install_mozart_server
+         - install_etcd
+         - configure_mozart_server
+         - configure_etcd
+    - name: Enable and start the service(s)
+      systemd:
+        name: {{ item }}
+        enabled: yes
+        state: started
+        with_items:
+          - etcd
+          - mozart-server
+
+- hosts: workers
+  remote_user: root
+  tasks:
+    - name: Install and configure tools
+      import_role:
+       name: mozart
+       tasks_from: {{ item }}
+       with_items:
+         - install_mozart_agent
+         - install_flanneld
+         - configure_mozart_agent
+         - configure_flanneld
+    - name: Install docker
+      package:
+        name: docker.io
+        state: present
+    - name: Enable and start the service(s)
+      systemd:
+        name: {{ item }}
+        enabled: yes
+        state: started
+        with_items:
+          - flanneld
+          - mozart-agent
