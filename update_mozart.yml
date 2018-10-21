@@ -1,0 +1,33 @@
+---
+- hosts: workstation
+  remote_user: root
+  tasks:
+    - import_role:
+       name: mozart
+       tasks_from: install_mozartctl
+
+- hosts: masters
+  remote_user: root
+  tasks:
+    - name: Install tools
+      import_role:
+       name: mozart
+       tasks_from: "install_mozart_server"
+    - name: Enable and start the service(s)
+      systemd:
+        name: mozart-server
+        enabled: yes
+        state: restarted
+
+- hosts: workers
+  remote_user: root
+  tasks:
+    - name: Install and configure tools
+      import_role:
+       name: mozart
+       tasks_from: "install_mozart_agent"
+    - name: Enable and start the service(s)
+      systemd:
+        name: mozart-agent
+        enabled: yes
+        state: restarted
